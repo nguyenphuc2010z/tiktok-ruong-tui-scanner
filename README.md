@@ -1,5 +1,10 @@
 # 🎁 TikTok Rương / Túi Quà — Live Scanner
 
+[![Build & Publish Docker Image](https://github.com/nguyenphuc2010z/tiktok-ruong-tui-scanner/actions/workflows/docker.yml/badge.svg)](https://github.com/nguyenphuc2010z/tiktok-ruong-tui-scanner/actions/workflows/docker.yml)
+
+> **Repo:** https://github.com/nguyenphuc2010z/tiktok-ruong-tui-scanner
+> **Docker image:** `ghcr.io/nguyenphuc2010z/tiktok-ruong-tui-scanner:latest`
+
 Website quét **LIVE TikTok có rương (treasure box) và túi quà (goody bag)** theo thời gian thực.
 **Không dùng API chính thức, không cần đăng nhập TikTok, không demo — chạy thật 100%.**
 
