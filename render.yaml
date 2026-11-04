@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: tiktok-ruong-tui-scanner
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DB_PATH
+        value: /data/data.db
+      - key: PORT
+        value: 8000
+    disk:
+      name: scanner-data
+      mountPath: /data
+      sizeGB: 1

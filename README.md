@@ -159,3 +159,41 @@ sudo systemctl status tiktok-scanner
 | `TELEGRAM_CHAT` | — | (tùy chọn) chat id |
 
 > Mật khẩu admin mặc định `admin123` — **hãy đổi ngay** trong trang `/admin` sau khi deploy.
+
+---
+
+## ☁️ Deploy 1-click lên Render (không cần VPS)
+
+Repo đã có sẵn `render.yaml`. Cách làm:
+
+1. Vào https://dashboard.render.com/blueprints
+2. Bấm **New Blueprint Instance** → chọn repo `tiktok-ruong-tui-scanner`
+3. Render tự đọc `render.yaml`, tạo web service + ổ đĩa 1GB (`/data`) để **giữ dữ liệu lâu dài**
+4. Bấm **Apply** → đợi build ~3 phút → có URL dạng `https://tiktok-ruong-tui-scanner.onrender.com`
+
+> Dùng gói **Starter** (~7$/tháng) để có ổ đĩa persistent + không bị sleep.
+> Gói Free chạy được nhưng service sẽ ngủ khi không truy cập và mất dữ liệu khi restart.
+
+## 🖥️ Chạy bằng Docker image có sẵn (nhanh nhất trên VPS)
+
+Image đã được GitHub Actions build & publish tự động:
+
+```bash
+docker run -d --name scanner \
+  -p 8000:8000 \
+  -v scanner-data:/data \
+  -e DB_PATH=/data/data.db \
+  --restart unless-stopped \
+  ghcr.io/nguyenphuc2010z/tiktok-ruong-tui-scanner:latest
+```
+
+Mở `http://<IP-VPS>:8000` → vào `/admin` (mật khẩu `admin123`) → đổi mật khẩu + nhập Telegram.
+
+## 🔄 Cập nhật phiên bản mới
+
+```bash
+docker pull ghcr.io/nguyenphuc2010z/tiktok-ruong-tui-scanner:latest
+docker rm -f scanner && docker run -d --name scanner -p 8000:8000 \
+  -v scanner-data:/data -e DB_PATH=/data/data.db --restart unless-stopped \
+  ghcr.io/nguyenphuc2010z/tiktok-ruong-tui-scanner:latest
+```
