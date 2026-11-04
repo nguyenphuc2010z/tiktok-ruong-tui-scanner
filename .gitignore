@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Data & runtime
+data.db
+data.db-*
+*.log
+server.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Local secrets
+.env
+seeds.local.txt
+
+# Sandbox / agent internals (never commit)
+.agent_hooks/
+.browser_data/
+.psiphon_data/
+.screenshots/
+outputs/
+summarized_conversations/
+todo.md

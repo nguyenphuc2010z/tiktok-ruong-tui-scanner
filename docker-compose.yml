@@ -1,0 +1,21 @@
+services:
+  scanner:
+    build: .
+    container_name: tiktok-ruong-tui-scanner
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_PATH=/data/data.db
+      - PORT=8000
+    volumes:
+      - scanner-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  scanner-data:

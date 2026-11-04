@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RươngTúi Live — Quét LIVE TikTok có Rương & Túi quà</title>
+<meta name="description" content="Hệ thống quét LIVE TikTok tự động, chỉ hiển thị phòng đang có rương xu và túi quà. Không cần đăng nhập TikTok, không dùng API chính thức. Thông báo Telegram tự động cho admin." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/style.css" />
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">
+      <span class="dot">🎁</span>
+      <span>RươngTúi Live<small>Quét LIVE · Rương &amp; Túi</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#live">LIVE</a>
+      <a href="#how">Cách hoạt động</a>
+      <a href="#price">Bảng giá</a>
+      <a href="/admin">Admin</a>
+      <a class="cta" href="#live">Xem LIVE ngay</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero wrap">
+    <span class="pill"><span class="live-dot"></span> Hệ thống đang quét TikTok LIVE 24/7</span>
+    <h1>Quét LIVE TikTok<br><span class="grad">Rương xu &amp; Túi quà</span> tự động</h1>
+    <p class="sub">Chỉ hiển thị những phòng LIVE đang có rương hoặc túi quà thật. Không đăng nhập TikTok, không dùng API chính thức — đọc dữ liệu công khai, chạy thật, cập nhật liên tục.</p>
+    <div class="hero-stats">
+      <div class="stat"><b id="statLive">0</b><span>Phòng đang LIVE</span></div>
+      <div class="stat"><b id="stat24">0</b><span>Phát hiện 24h</span></div>
+      <div class="stat"><b id="statTotal">0</b><span>Tổng phát hiện</span></div>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#live">🚀 Xem danh sách LIVE</a>
+      <a class="btn btn-ghost" href="/admin">⚙️ Trang quản trị</a>
+    </div>
+  </section>
+
+  <!-- LIVE LIST -->
+  <section class="section wrap" id="live">
+    <div class="section-head">
+      <div>
+        <h2>LIVE đang có Rương / Túi</h2>
+        <p>Danh sách tự cập nhật. Bấm <b>Mở LIVE</b> để vào phòng trong TikTok.</p>
+      </div>
+      <div class="toolbar">
+        <div class="tabs">
+          <button class="tab active" data-type="all">Tất cả</button>
+          <button class="tab" data-type="ruong">🎁 Rương</button>
+          <button class="tab tui" data-type="tui">👜 Túi</button>
+        </div>
+        <div class="field"><label>Xu ≥</label><input id="fCoins" type="number" min="0" value="0" /></div>
+        <div class="field"><label>Ratio ≥</label><input id="fRatio" type="number" min="0" step="0.1" value="0" /></div>
+        <label class="switch"><input id="autoRefresh" type="checkbox" checked /> Tự cập nhật</label>
+      </div>
+    </div>
+
+    <div id="liveGrid" class="live-grid">
+      <div class="empty" style="grid-column:1/-1">
+        <div class="big"><span class="spinner"></span></div>
+        Đang tải danh sách LIVE…
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="section wrap" id="how">
+    <div class="section-head">
+      <div><h2>Cách hoạt động</h2><p>Bot quét liên tục và báo về Telegram ngay khi có kèo.</p></div>
+    </div>
+    <div class="grid3">
+      <div class="step"><div class="n">1</div><h3>Tự động quét LIVE</h3><p>Hệ thống liên tục kiểm tra các kênh đang phát trực tiếp bằng dữ liệu công khai của TikTok. Không cần đăng nhập tài khoản nào.</p></div>
+      <div class="step"><div class="n">2</div><h3>Phát hiện Rương &amp; Túi</h3><p>Khi phòng xuất hiện rương xu hoặc túi quà, bot đọc tổng xu, số suất nhận, tỷ lệ, level và thời gian mở.</p></div>
+      <div class="step"><div class="n">3</div><h3>Báo Telegram tự động</h3><p>Kèo đạt bộ lọc sẽ được gửi thẳng về Telegram của admin — hoàn toàn tự động, không nhập tay.</p></div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section wrap" id="price">
+    <div class="section-head">
+      <div><h2>Bảng giá</h2><p>Chọn gói theo số kênh cần theo dõi đồng thời.</p></div>
+    </div>
+    <div class="grid3">
+      <div class="price">
+        <h3>Khởi đầu</h3>
+        <div class="amount">Miễn phí<span> / dùng thử</span></div>
+        <ul><li>Theo dõi 50 kênh LIVE</li><li>Xem danh sách rương &amp; túi</li><li>Bộ lọc xu / ratio cơ bản</li></ul>
+        <a class="btn btn-ghost" href="#live">Dùng ngay</a>
+      </div>
+      <div class="price featured">
+        <h3>Tiêu chuẩn</h3>
+        <div class="amount">99.000đ<span> / tháng</span></div>
+        <ul><li>Theo dõi 500 kênh LIVE</li><li>Thông báo Telegram tự động</li><li>Bộ lọc xu, ratio, level, viewers</li><li>Cập nhật realtime</li></ul>
+        <a class="btn btn-primary" href="/admin">Kích hoạt</a>
+      </div>
+      <div class="price">
+        <h3>Chuyên nghiệp</h3>
+        <div class="amount">199.000đ<span> / tháng</span></div>
+        <ul><li>Theo dõi 1.000+ kênh LIVE</li><li>Nhiều nhóm Telegram nhận kèo</li><li>Bộ lọc nâng cao &amp; ưu tiên quét</li><li>Hỗ trợ cấu hình riêng</li></ul>
+        <a class="btn btn-ghost" href="/admin">Liên hệ</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div>
+      <div class="brand" style="margin-bottom:8px"><span class="dot">🎁</span><span>RươngTúi Live</span></div>
+      <div>Hệ thống quét LIVE TikTok Rương &amp; Túi tự động.</div>
+    </div>
+    <div style="display:flex;gap:22px;flex-wrap:wrap">
+      <a href="#live">LIVE</a><a href="#how">Hướng dẫn</a><a href="#price">Bảng giá</a><a href="/admin">Admin</a>
+    </div>
+  </div>
+  <div class="wrap disc">
+    Dịch vụ độc lập, không đại diện TikTok. Không dùng API chính thức và không yêu cầu đăng nhập TikTok.
+    Website chỉ hiển thị dữ liệu công khai của các phòng LIVE đang có rương/túi và không cam kết người dùng nhận được xu.
+    Kết quả phụ thuộc điều kiện từng phòng và quy định của TikTok.
+  </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+<script src="/assets/app.js"></script>
+</body>
+</html>
