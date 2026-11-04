@@ -29,3 +29,9 @@ seeds.local.txt
 outputs/
 summarized_conversations/
 todo.md
+
+# Screenshots / temp scripts
+Screenshot_*.jpg
+Screenshot_*.png
+gh_device_poll.py
+cf.log
