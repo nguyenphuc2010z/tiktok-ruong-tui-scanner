@@ -2,17 +2,24 @@ services:
   - type: web
     name: tiktok-ruong-tui-scanner
     runtime: docker
-    plan: starter
+    # "free" = miễn phí, không cần thẻ. Nâng lên "starter" nếu muốn ổ đĩa giữ dữ liệu.
+    plan: free
     region: singapore
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     autoDeploy: true
     envVars:
+      # Gói free không có ổ đĩa -> dùng /tmp (mất khi restart, không sao vì kèo rương/túi chỉ sống vài phút)
       - key: DB_PATH
-        value: /data/data.db
+        value: /tmp/data.db
       - key: PORT
         value: 8000
-    disk:
-      name: scanner-data
-      mountPath: /data
-      sizeGB: 1
+      # Điền sau trong Dashboard > Environment (hoặc bỏ trống rồi cấu hình trong /admin)
+      - key: TELEGRAM_TOKEN
+        sync: false
+      - key: TELEGRAM_CHAT
+        sync: false
+      - key: TELEGRAM_ENABLED
+        value: "1"
+      - key: ADMIN_PASSWORD
+        sync: false

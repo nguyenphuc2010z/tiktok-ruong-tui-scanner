@@ -69,6 +69,19 @@ def get_settings() -> Dict[str, str]:
     out = dict(DEFAULT_SETTINGS)
     for r in rows:
         out[r["key"]] = r["value"]
+    # Environment overrides (useful on PaaS where the disk is ephemeral)
+    env_map = {
+        "TELEGRAM_TOKEN": "telegram_token",
+        "TELEGRAM_CHAT": "telegram_chat",
+        "TELEGRAM_ENABLED": "telegram_enabled",
+        "ADMIN_PASSWORD": "admin_password",
+        "SITE_NAME": "site_name",
+        "SEEDS": "seeds",
+    }
+    for env_key, setting_key in env_map.items():
+        val = os.environ.get(env_key)
+        if val:
+            out[setting_key] = val
     return out
 
 
