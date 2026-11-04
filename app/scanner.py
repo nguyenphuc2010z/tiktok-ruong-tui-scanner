@@ -27,14 +27,45 @@ def _load_seed_file() -> List[str]:
         for line in f:
             line = line.strip()
             if line and not line.startswith("#"):
-                out.append(line.lstrip("@"))
+                u = normalize_seed(line)
+                if u:
+                    out.append(u)
     return out
+
+
+def normalize_seed(value: str) -> str:
+    """Accept any of these and return a bare TikTok username:
+
+    - ``@username``
+    - ``username``
+    - ``https://www.tiktok.com/@username``
+    - ``https://www.tiktok.com/@username/live``
+    - ``https://www.tiktok.com/@username/video/123...``
+    - ``tiktok.com/@username``
+    """
+    v = (value or "").strip()
+    if not v:
+        return ""
+    # Strip URL parts
+    if "://" in v or "tiktok.com" in v.lower():
+        v = v.split("?")[0].split("#")[0].rstrip("/")
+        if "@" in v:
+            v = v.split("@", 1)[1]
+        else:
+            # fall back to last path segment
+            v = v.rsplit("/", 1)[-1]
+        # drop trailing path segments like /live or /video/123
+        v = v.split("/")[0]
+    v = v.lstrip("@").strip()
+    # keep only valid username characters
+    cleaned = "".join(ch for ch in v if ch.isalnum() or ch in "._-")
+    return cleaned
 
 
 def _parse_seeds(raw: str) -> List[str]:
     parts: List[str] = []
     for chunk in raw.replace(";", ",").replace("\n", ",").split(","):
-        c = chunk.strip().lstrip("@")
+        c = normalize_seed(chunk)
         if c:
             parts.append(c)
     # merge with seed file

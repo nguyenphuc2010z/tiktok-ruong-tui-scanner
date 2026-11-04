@@ -9,9 +9,16 @@ import asyncio
 import time
 from typing import Any, Dict, List, Optional
 
+import httpx
+
 from TikTokLive.client.web.web_client import TikTokWebClient
 from TikTokLive.client.web.routes.fetch_room_info import FetchRoomInfoRoute
 from TikTokLive.client.web.routes.fetch_room_id_api import FetchRoomIdAPIRoute
+
+_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
 
 
 def _first_url(img: Any) -> str:
@@ -49,14 +56,45 @@ class TikTokFetcher:
             pass
 
     async def get_live_room_id(self, unique_id: str) -> Optional[str]:
-        """Return the room_id if the user is currently LIVE, else None."""
+        """Return the room_id if the user is currently LIVE, else None.
+
+        Uses TikTok's public ``/api-live/user/room/`` endpoint. TikTok requires
+        ``aid=1988`` (web app id) plus ``sourceType=54``; without them the API
+        replies ``params_error``.
+        """
         unique_id = unique_id.strip().lstrip("@")
         if not unique_id:
             return None
+        url = "https://www.tiktok.com/api-live/user/room/"
+        params = {
+            "uniqueId": unique_id,
+            "sourceType": "54",
+            "aid": "1988",
+            "app_language": "vi-VN",
+            "app_name": "tiktok_web",
+            "device_platform": "web_pc",
+            "region": "VN",
+            "priority_region": "VN",
+        }
+        headers = {
+            "User-Agent": _UA,
+            "Referer": f"https://www.tiktok.com/@{unique_id}",
+            "Accept": "application/json, text/plain, */*",
+        }
+        data: Dict[str, Any] = {}
         try:
-            data = await FetchRoomIdAPIRoute.fetch_user_room_data(self.web, unique_id)
+            async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
+                r = await client.get(url, params=params, headers=headers)
+                if r.status_code == 200:
+                    data = r.json()
         except Exception:
-            return None
+            data = {}
+        if not data:
+            # Fallback to the TikTokLive helper (may work in some regions)
+            try:
+                data = await FetchRoomIdAPIRoute.fetch_user_room_data(self.web, unique_id)
+            except Exception:
+                return None
         user = (data.get("data") or {}).get("user") or {}
         rid = user.get("roomId") or user.get("room_id")
         if rid and str(rid) != "0":

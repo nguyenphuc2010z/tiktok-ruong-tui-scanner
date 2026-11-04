@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from . import db
 from .notify import send_test
 from .scanner import scanner
+from .tiktok import TikTokFetcher
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WEB = os.path.join(BASE, "web")
@@ -146,6 +147,40 @@ async def admin_scanner(request: Request, x_admin_pass: str | None = Header(defa
     elif action == "stop":
         await scanner.stop()
     return {"ok": True, "running": scanner.running}
+
+
+@app.post("/api/admin/check-channel")
+async def admin_check_channel(request: Request, x_admin_pass: str | None = Header(default=None)) -> Dict[str, Any]:
+    """Resolve a TikTok link/username and report whether it is LIVE right now."""
+    _check_admin(x_admin_pass)
+    body = await request.json()
+    raw = (body.get("value") or "").strip()
+    if not raw:
+        raise HTTPException(status_code=400, detail="Nhập username hoặc link TikTok")
+    from .scanner import normalize_seed
+
+    username = normalize_seed(raw)
+    if not username:
+        raise HTTPException(status_code=400, detail="Không đọc được username từ nội dung đã nhập")
+    room_id = await scanner.fetcher.get_live_room_id(username)
+    if not room_id:
+        return {"ok": True, "username": username, "live": False, "message": "Kênh này hiện KHÔNG phát LIVE"}
+    info = await scanner.fetcher.get_room_info(room_id)
+    if not info:
+        return {"ok": True, "username": username, "live": True, "room_id": room_id,
+                "message": "Đang LIVE nhưng không đọc được thông tin phòng"}
+    summary = TikTokFetcher.room_summary(info, username)
+    prizes = TikTokFetcher.parse_prizes(info)
+    return {
+        "ok": True,
+        "username": username,
+        "live": True,
+        "room_id": room_id,
+        "title": summary.get("title"),
+        "viewers": summary.get("viewers"),
+        "prizes": prizes,
+        "message": "Đang LIVE" + (f" — có {len(prizes)} rương/túi" if prizes else " — chưa có rương/túi"),
+    }
 
 
 @app.post("/api/admin/test-telegram")

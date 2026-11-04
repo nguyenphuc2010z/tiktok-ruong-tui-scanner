@@ -115,8 +115,20 @@
 
   <div class="panel">
     <h2>Danh sách kênh quét (seed)</h2>
-    <p class="hint">Mỗi dòng một username TikTok (không cần @). Hệ thống dò các kênh này để tìm phòng LIVE có rương/túi.</p>
-    <div class="fld"><textarea id="seeds" placeholder="tiktok&#10;shopee_vn&#10;..."></textarea></div>
+    <p class="hint">Mỗi dòng một kênh TikTok. Bạn có thể nhập <b>username</b> (vd <code>tiktok</code>) hoặc <b>dán nguyên link</b> TikTok (vd <code>https://www.tiktok.com/@tiktok/live</code>) — hệ thống tự tách lấy username. Hệ thống dò các kênh này để tìm phòng LIVE có rương/túi.</p>
+
+    <div class="fld">
+      <label>🔍 Kiểm tra nhanh một kênh (dán link hoặc username)</label>
+      <div class="row" style="align-items:flex-end">
+        <div class="fld" style="flex:1;margin:0">
+          <input id="checkInput" placeholder="https://www.tiktok.com/@username/live  hoặc  username" />
+        </div>
+        <button class="btn" id="btnCheck" type="button" style="white-space:nowrap">Kiểm tra</button>
+      </div>
+      <div id="checkResult" class="hint" style="margin-top:8px"></div>
+    </div>
+
+    <div class="fld"><textarea id="seeds" placeholder="tiktok&#10;shopee_vn&#10;https://www.tiktok.com/@vohoainam/live&#10;..."></textarea></div>
   </div>
 
   <div class="panel">

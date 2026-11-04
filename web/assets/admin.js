@@ -107,6 +107,42 @@
     } catch (e) { toast("Lỗi gửi thử"); }
   }
 
+  async function checkChannel() {
+    const v = ($("checkInput").value || "").trim();
+    const box = $("checkResult");
+    if (!v) { box.textContent = "Nhập username hoặc link TikTok trước."; return; }
+    box.textContent = "⏳ Đang kiểm tra...";
+    try {
+      const r = await api("/api/admin/check-channel", {
+        method: "POST", body: JSON.stringify({ value: v }),
+      });
+      if (!r.ok) { box.textContent = "❌ " + (r.message || "Không kiểm tra được"); return; }
+      let txt = `✅ Username: @${r.username}\n`;
+      if (!r.live) {
+        txt += "🔴 Hiện KHÔNG phát LIVE — vẫn có thể thêm vào danh sách, hệ thống sẽ dò lại sau.";
+      } else {
+        txt += `🟢 Đang LIVE — ${r.viewers ? Number(r.viewers).toLocaleString("vi-VN") + " người xem" : ""}\n`;
+        if (r.title) txt += `📝 ${r.title}\n`;
+        txt += r.prizes && r.prizes.length
+          ? `🎁 Có ${r.prizes.length} rương/túi: ` + r.prizes.map(p => `${p.kind === "ruong" ? "Rương" : "Túi"} ${p.coins} xu`).join(", ")
+          : "⚪ Chưa có rương/túi trong phòng này";
+      }
+      box.style.whiteSpace = "pre-line";
+      box.textContent = txt;
+      if (r.username) {
+        const ta = $("seeds");
+        const lines = ta.value.split("\n").map(s => s.trim()).filter(Boolean);
+        if (!lines.some(l => l.replace(/^@/, "").split("/").pop() === r.username)) {
+          lines.push(r.username);
+          ta.value = lines.join("\n");
+          toast("Đã thêm @" + r.username + " vào danh sách — nhớ bấm Lưu");
+        }
+      }
+    } catch (e) {
+      box.textContent = "❌ Lỗi kết nối";
+    }
+  }
+
   async function scannerAction(action) {
     await api("/api/admin/scanner", { method: "POST", body: JSON.stringify({ action }) });
     toast(action === "start" ? "Đã bật quét" : "Đã dừng quét");
@@ -118,6 +154,8 @@
   $("loginBtn").addEventListener("click", login);
   $("pw").addEventListener("keydown", (e) => { if (e.key === "Enter") login(); });
   $("btnSave").addEventListener("click", save);
+  $("btnCheck").addEventListener("click", checkChannel);
+  $("checkInput").addEventListener("keydown", (e) => { if (e.key === "Enter") checkChannel(); });
   $("btnTestTg").addEventListener("click", testTg);
   $("btnStart").addEventListener("click", () => scannerAction("start"));
   $("btnStop").addEventListener("click", () => scannerAction("stop"));
